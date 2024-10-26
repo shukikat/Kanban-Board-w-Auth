@@ -13,14 +13,14 @@ class AuthService {
   loggedIn() {
     // TODO: return a value that indicates if the user is logged in
     //only need to get token if user is logged in
-    const token=this.getToken();
+    const token=this.getToken(); //check for token
     // return token;
-    return !!token && !this.isTokenExpired(token)
+    return !!token && !this.isTokenExpired(token) //ensure that user has token and token is not expired
   }
   
   isTokenExpired(token: string) {
     // TODO: return a value that indicates if the token is expired
-    if(!token) return true;
+    if(!token) return true; 
     try {
       const decodedToken=jwtDecode<JwtPayload>(token);
       const currentTime=Date.now()/1000;
@@ -34,7 +34,7 @@ class AuthService {
 
   getToken(): string {
     // TODO: return the token
-    const loggedUser=localStorage.getItem('id_token') || '';
+    const loggedUser=localStorage.getItem('id_token') || ' ';
     return loggedUser;
   }
 
