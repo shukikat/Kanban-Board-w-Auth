@@ -13,25 +13,26 @@ export const authenticateToken = (req: Request, res: Response, next: NextFunctio
   // if header is present splits the token up and gets the header portion of the token
   if (authHeader) {
     const token=authHeader.split(' ')[1];
-  
-
-  //secretKey from .env folder
-  const secretKey=process.env.JWT_SECRET_KEY || ''; 
+    const secretKey=process.env.JWT_SECRET_KEY || ''; 
+    //check to ensure secretKey is defined
+    if (!secretKey) {
+      return res.status(500).json({error: 'Internal server error: JWT secret key not configured.'})
+    }
 
   //verify the JWT token
   jwt.verify(token, secretKey, (err, user)=> {
     if(err) {
-      return res.sendStatus(403); 
+      return res.status(403).json({error: 'Forbidden: Invalid token.'}); 
     }
 
     //says is not error this pairs the User with the token
     req.user=user as JwtPayload;
-    return next ();
+    next ();
   
   });
 
 } else {
-  res.sendStatus(401);
+  return res.sendStatus(401).json({error: 'Token not valid.'});
 }
 
 };
