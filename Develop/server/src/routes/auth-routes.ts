@@ -10,7 +10,7 @@ export const login = async (req: Request, res: Response) => {
   //get user from database by username (find the one that matches )
   const user=await User.findOne({
     where: {username}, 
-  })
+  });
 
   //if user does not exist in databasse response will return that authentical failed
   if (!user) {
@@ -18,14 +18,17 @@ export const login = async (req: Request, res: Response) => {
   
   }
 //need to make sure that password is paired up with correct username
-  const passWordIsValid = await bcrypt.compare(password, user.password)
+  const passWordIsValid = await bcrypt.compare(password, user.password);
   if (!passWordIsValid) {
-    return res.status(401).json({message: "Not authenticated"})
+    return res.status(401).json({message: "User is not valid."})
   }
 
   //need to install node to ensure this functionality, getting Secret Key 
   const secretKey=process.env.JWT_SECRET_KEY || ''; 
   //creating token from jwt
+  if (!secretKey) {
+    return res.status(500).json({error: 'Forbidden, key not configured'})
+  }
   const token=jwt.sign({username}, secretKey, {expiresIn: '1h'});
   return res.json({token}) //token is set as json response with valid credentials
 ;};
