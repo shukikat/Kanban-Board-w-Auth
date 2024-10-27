@@ -24,7 +24,9 @@ class AuthService {
     try {
       const decodedToken=jwtDecode<JwtPayload>(token);
       const currentTime=Date.now()/1000;
-      return decodedToken.exp < currentTime;
+      // return decodedToken.exp < currentTime;
+      return decodedToken.exp !==undefined && decodedToken.exp < currentTime
+
     } catch (error){
       console.error('Error decoding token:', error);
       return true;
